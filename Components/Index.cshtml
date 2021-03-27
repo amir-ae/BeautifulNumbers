@@ -1,0 +1,17 @@
+﻿@page "/blazor"
+@{ Layout = null; }
+
+@namespace BeautifulNumbers.Components
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Beautiful Numbers</title>
+    <link href="/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <base href="/" />
+</head>
+<body>
+    <component type="typeof(Routed)" render-mode="Server" />
+    <script src="/_framework/blazor.server.js"></script>
+</body>
+</html>

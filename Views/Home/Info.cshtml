@@ -1,0 +1,25 @@
+﻿@model BeautifulNumbers.Models.Response
+
+<div class="text-center">
+    <h3 class="m-4">
+        The @Model.Name.ToLower() number system has @Model.Radix symbols.
+    </h3>
+    <h3 class="m-3">
+        The number @printNumber(Model.BeautifulNumber.NumberText) is in @Model.Name.ToLower().
+    </h3>
+    <h4>
+        It is beautiful in the extent of @Model.Extent digits.
+    </h4>
+    <h3 class="m-4">
+        There are @calculator.RadixBeauty(Model.Radix, Model.Extent) beautiful numbers like it!
+    </h3>
+</div>
+
+@functions {
+    private BeautyCalculator calculator = new BeautyCalculator();
+
+    private string printNumber(char[] numberText)
+    {
+        return new string(numberText);
+    }
+}

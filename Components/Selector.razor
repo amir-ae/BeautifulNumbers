@@ -1,0 +1,89 @@
+﻿@page "/blazor"
+
+<link href="/blazorValidation.css" rel="stylesheet" />
+<EditForm Model="response" OnValidSubmit="@submitResponse">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <div class="text-center m-1">
+            <div class="form-group">
+                <label class="h5">Number system</label>
+                <ValidationMessage For="@(() => response.Radix)" />
+                <select @bind="selectSystem">
+                    <option key="---" value=0>---</option>
+                    @foreach (KeyValuePair<int, string> numSystem in Constants.numSystems)
+                    {
+                        <option key="@numSystem.Key" value="@numSystem.Key">@numSystem.Value</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="h5">Number of symbols</label>
+                <ValidationMessage For="@(() => response.Extent)" />
+                <select @bind="selectExtent">
+                    <option key="---" value=0>---</option>
+                    @if (digits != null)
+                    {
+                        foreach (int value in digits)
+                        {
+                            <option key="@value" value="@value">@value</option>
+                        }
+                    }
+                </select>
+            </div>
+
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    public Response response { get; set; } = new Response();
+    private int[] digits { get; set; }
+
+    public int selectSystem
+    {
+        get { return response.Radix; }
+        set
+        {
+            response.Radix = value;
+            response.Name = Constants.numSystems[value];
+            digits = FillArray(Math.Min(value / 2, 6));
+        }
+    }
+
+    public int selectExtent
+    {
+        get { return response.Extent; }
+        set
+        {
+            response.Extent = value;
+        }
+    }
+
+    private int[] FillArray(int max)
+    {
+        var digits = new List<int>();
+        for (int i = 2; i <= max; i++)
+        {
+            digits.Add(i);
+        }
+        Console.WriteLine("ArrayFilled");
+        return digits.ToArray();
+    }
+
+    [Inject]
+    private NavigationManager NavManager { get; set; }
+
+    private BeautyCalculator calculator = new BeautyCalculator();
+
+    private void submitResponse()
+    {
+        response.BeautifulNumber = calculator.GetBeautifulNumber(response.Radix, response.Extent);
+        Repository.SaveResponse(response);
+        NavManager.NavigateTo("Info", true);
+    }
+}

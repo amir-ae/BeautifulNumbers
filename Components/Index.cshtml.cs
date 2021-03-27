@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace SportsStore.Pages.Admin
+namespace BeautifulNumbers.Pages.Admin
 {
     public class IndexModel : PageModel
     {

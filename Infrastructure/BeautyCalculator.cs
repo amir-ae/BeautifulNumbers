@@ -9,35 +9,37 @@ namespace BeautifulNumbers.Infrastructure
         public ulong RadixBeauty(int radix, int extent)
         {
             ulong totalResult = 0;
+
+            // create dictionary to store calculated result values, so it won't be recalculated
             Dictionary<int, ulong> valResults = new Dictionary<int, ulong>();
 
+            // create a number 0 using the selected radix and divide it into left, middle, and right parts
             Number number = new Number(0, radix, extent);
             var (left, middle, right) = number;
 
             do
             {
-                int refValue = Hash(left);
-                if (valResults.ContainsKey(refValue))
+                int refValue = Hash(left);              // calculate the left sum value and take it as a reference
+                if (valResults.ContainsKey(refValue))   // check dictionary stored values for reference key
                 {
-                    totalResult += valResults[refValue];
+                    totalResult += valResults[refValue];    // add result value to total result
                 }
                 else
                 {
-                    ulong result = LookForBeauty(refValue, radix, right);
-                    valResults.Add(refValue, result);
-                    totalResult += result;
+                    ulong result = CalculateResult(refValue, radix, extent);  // calculate result value
+                    valResults.Add(refValue, result);       // add result value to dictionary
+                    totalResult += result;                  // add result value to total result
                 }
-                left = Increment(left, radix);
-                right = Reset(right);
+                left = Increment(left, radix);              // increment left part of the number
             }
             while (Hash(left) != 0);
 
             return totalResult;
         }
 
-        private ulong LookForBeauty(int refValue, int radix, char[] num = null)
+        private ulong CalculateResult(int refValue, int radix, int extent, char[] num = null)
         {
-            char[] number = num ?? Converter.ConcateChars('0', radix);
+            char[] number = num ?? Converter.ConcateChars('0', extent);
             ulong result = 0;
             int currentValue = Hash(number);
 
@@ -45,30 +47,31 @@ namespace BeautifulNumbers.Infrastructure
             {
                 while (refValue > currentValue)
                 {
-                    number = Increment(number, radix);                    // increment the least significant digit
+                    number = Increment(number, radix);              // increment the least significant digit
                     currentValue = Hash(number);
                 }
-                if (refValue == currentValue)
+                if (currentValue == refValue)
                 {
-                    result++;
+                    result++;                                       // increment result
                 }
 
                 for (int position = number.Length - 2; refValue == currentValue && position >= 0; position--)
                 {
-                    number = Increment(number, radix, position);          // increment the next digit
+                    number = Increment(number, radix, position);    // increment the next digit
                     currentValue = Hash(number);
 
-                    if (refValue == currentValue)
+                    if (currentValue == refValue)
                     {
-                        result++;
+                        result++;                                   // increment result and continue
                     }
                 }
             }
-            while (refValue > currentValue && currentValue != 0);
+            while (refValue > currentValue && currentValue != 0);   // repeat
 
             return result;
         }
 
+        // calculate the sum of number digits
         private int Hash(char[] number)
         {
             int value = 0;

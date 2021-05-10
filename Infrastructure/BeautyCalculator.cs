@@ -10,25 +10,25 @@ namespace BeautifulNumbers.Infrastructure
         {
             ulong totalResult = 0;
 
-            // create dictionary to store calculated result values, so it won't be recalculated
+            // create a dictionary to store calculated result values, so it won't be unnecessarily recalculated
             Dictionary<int, ulong> valResults = new Dictionary<int, ulong>();
 
-            // create a number 0 using the selected radix and divide it into left, middle, and right parts
+            // create a number zero using the selected radix and divide it into left, middle, and right parts
             Number number = new Number(0, radix, extent);
             var (left, middle, right) = number;
 
             do
             {
                 int refValue = Hash(left);              // calculate the left sum value and take it as a reference
-                if (valResults.ContainsKey(refValue))   // check dictionary stored values for reference key
+                if (valResults.ContainsKey(refValue))   // check dictionary stored values for the reference key
                 {
                     totalResult += valResults[refValue];    // add result value to total result
                 }
                 else
                 {
                     ulong result = CalculateResult(refValue, radix, extent);  // calculate result value
-                    valResults.Add(refValue, result);       // add result value to dictionary
-                    totalResult += result;                  // add result value to total result
+                    valResults.Add(refValue, result);       // add result value into dictionary
+                    totalResult += result;                  // add result value into total result
                 }
                 left = Increment(left, radix);              // increment left part of the number
             }

@@ -8,67 +8,43 @@ namespace BeautifulNumbers.Infrastructure
     {
         public ulong RadixBeauty(int radix, int extent)
         {
-            ulong totalResult = 0;
-
-            // create a dictionary to store calculated result values, so it won't be unnecessarily recalculated
+            // create a dictionary to store calculated result values
             Dictionary<int, ulong> valResults = new Dictionary<int, ulong>();
+
+            int refValue, maxRefValue = (radix - 1) * extent;
+
+            for (refValue = 0; refValue <= maxRefValue; refValue++)
+            {
+                valResults.Add(refValue, 0);        // initialize the dictionary             
+            }
 
             // create a number zero using the selected radix and divide it into left, middle, and right parts
             Number number = new Number(0, radix, extent);
-            var (left, middle, right) = number;
+            var (num, middle, right) = number;
 
             do
             {
-                int refValue = Hash(left);              // calculate the left sum value and take it as a reference
-                if (valResults.ContainsKey(refValue))   // check dictionary stored values for the reference key
-                {
-                    totalResult += valResults[refValue];    // add result value to total result
-                }
-                else
-                {
-                    ulong result = CalculateResult(refValue, radix, extent);  // calculate result value
-                    valResults.Add(refValue, result);       // add result value to the dictionary
-                    totalResult += result;                  // add result value to total result
-                }
-                left = Increment(left, radix);              // increment left part of the number
+                refValue = Hash(num);
+                valResults[refValue]++;             // populate the dictionary
+                num = Increment(num, radix);
             }
-            while (Hash(left) != 0);
+            while (refValue < maxRefValue);
+
+            ulong totalResult = 0;                  // initialize total result
+
+            // define additional variants from the middle part
+            ulong variants = Convert.ToUInt64(Math.Pow(radix, middle.Length));   
+            
+            foreach (var kvp in valResults)        
+            {
+                // define results from the left and right parts
+                ulong results = Convert.ToUInt64(Math.Pow(kvp.Value, 2));
+
+                // add beautiful numbers to total result
+                totalResult += results * variants;
+            }
 
             return totalResult;
-        }
-
-        private ulong CalculateResult(int refValue, int radix, int extent, char[] num = null)
-        {
-            char[] number = num ?? Converter.ConcateChars('0', extent);
-            ulong result = 0;
-            int currentValue = Hash(number);
-
-            do
-            {
-                while (refValue > currentValue)
-                {
-                    number = Increment(number, radix);              // increment the least significant digit
-                    currentValue = Hash(number);
-                }
-                if (currentValue == refValue)
-                {
-                    result++;                                       // increment result
-                }
-
-                for (int position = number.Length - 2; refValue == currentValue && position >= 0; position--)
-                {
-                    number = Increment(number, radix, position);    // increment the next digit
-                    currentValue = Hash(number);
-
-                    if (currentValue == refValue)
-                    {
-                        result++;                                   // increment result and continue
-                    }
-                }
-            }
-            while (refValue > currentValue && currentValue != 0);   // repeat
-
-            return result;
         }
 
         // calculate the sum of number digits

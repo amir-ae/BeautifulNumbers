@@ -92,18 +92,18 @@ namespace BeautifulNumbers.Infrastructure
 
             int index = Constants.characters.IndexOf(number[position]);     // get digit character at position
 
-            if (index == radix - 1)                     // if it is the last character in number system
+            if (index == radix - 1)                 // if it is the last character in number system
             {
-                if (position > 0)
+                if (position > 0)                       // if it is not the most significant digit
                 {
                     number = Increment(number, radix, position - 1);    // increment the next digit
                 }
-                else                                    // else if the maximum number has been reached
+                else
                 {
-                    number = Reset(number);             // reset the whole number
+                    number = Reset(number);             // else reset the whole number
                 }
             }
-            else
+            else                                    // if the character can be incremented
             {
                 number[position] = Constants.characters[++index];       // incremented the character in position
                 number = Reset(number, position + 1);                   // reset the following digits

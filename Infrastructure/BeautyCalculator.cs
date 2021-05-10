@@ -27,8 +27,8 @@ namespace BeautifulNumbers.Infrastructure
                 else
                 {
                     ulong result = CalculateResult(refValue, radix, extent);  // calculate result value
-                    valResults.Add(refValue, result);       // add result value into dictionary
-                    totalResult += result;                  // add result value into total result
+                    valResults.Add(refValue, result);       // add result value to the dictionary
+                    totalResult += result;                  // add result value to total result
                 }
                 left = Increment(left, radix);              // increment left part of the number
             }

@@ -86,27 +86,27 @@ namespace BeautifulNumbers.Infrastructure
 
         private char[] Increment(char[] num, int radix, int? pos = null)
         {
-            char[] number = new char[num.Length];
-            Array.Copy(num, number, num.Length);
-            int position = pos ?? number.Length - 1;
+            char[] number = new char[num.Length];       // create a new array
+            Array.Copy(num, number, num.Length);        // copy content
+            int position = pos ?? number.Length - 1;    // define digit position to increment
 
-            int index = Constants.characters.IndexOf(number[position]);
+            int index = Constants.characters.IndexOf(number[position]);     // get digit character at position
 
-            if (index == radix - 1)
+            if (index == radix - 1)                     // if it is the last character in number system
             {
                 if (position > 0)
                 {
-                    number = Increment(number, radix, position - 1);
+                    number = Increment(number, radix, position - 1);    // increment the next digit
                 }
-                else
+                else                                    // else if the maximum number has been reached
                 {
-                    number = Reset(number);
+                    number = Reset(number);             // reset the whole number
                 }
             }
             else
             {
-                number[position] = Constants.characters[++index];
-                number = Reset(number, position + 1);
+                number[position] = Constants.characters[++index];       // incremented the character in position
+                number = Reset(number, position + 1);                   // reset the following digits
             }
 
             return number;
